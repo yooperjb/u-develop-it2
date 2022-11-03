@@ -18,17 +18,14 @@ const db = new sqlite3.Database('./db/election.db', err => {
     console.log('Connected to the election database!');
 });
 
-// app.get('/', (req, res) => {
-//     res.json({
-//         message: 'Hello World'
-//     });
-// });
-
-
 // GET all candidates route /api/candidates (express)
 app.get('/api/candidates', (req, res) => {
     console.log('client req', req);
-    const sql = `SELECT * FROM candidates`;
+    const sql = `SELECT candidates.*, parties.name
+                AS party_name
+                FROM candidates
+                LEFT JOIN parties
+                ON candidates.party_id = parties.id`;
     const params = [];
     
     // Use the all method to return all matching rows
@@ -46,8 +43,12 @@ app.get('/api/candidates', (req, res) => {
 
 // GET a single candidate /api/candidate/:id (express)
 app.get('/api/candidate/:id', (req, res) => {
-    const sql = `SELECT * FROM candidates
-                WHERE id = ?`;
+    const sql = `SELECT candidates.*, parties.name
+                AS party_name
+                FROM candidates
+                LEFT JOIN parties
+                ON candidates.party_id = parties.id
+                WHERE candidates.id = ?`;
     // params as an array
     const params = [req.params.id];
     // console.log('client req', req.params);
@@ -113,8 +114,6 @@ app.post('/api/candidate', ({ body }, res) => {
         });
     });
 });
-
-
 
 // Default response for any other request (not found) catch all
 app.use((req, res) => {
