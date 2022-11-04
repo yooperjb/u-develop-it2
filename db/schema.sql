@@ -8,6 +8,8 @@ CREATE TABLE parties (
     description TEXT
 );
 
+/* The foreign key constrant doesn't work as antisipated. If changing party_id to a value that doesn't exist in parties table no error occurs and the value is still changed.  */
+
 CREATE TABLE candidates (
     id INTEGER PRIMARY KEY,
     first_name VARCHAR (30) NOT NULL,
